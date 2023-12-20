@@ -6,5 +6,6 @@ describe('AuthenticationsRepository interface', () => {
 
     await expect(authenticationsRepository.addRefreshToken('')).rejects.toThrow('AUTHENTICATIONS_REPOSITORY.METHOD_NOT_IMPLEMENTED');
     await expect(authenticationsRepository.verifyRefreshToken('')).rejects.toThrow('AUTHENTICATIONS_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+    await expect(authenticationsRepository.deleteRefreshToken('')).rejects.toThrow('AUTHENTICATIONS_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   });
 });

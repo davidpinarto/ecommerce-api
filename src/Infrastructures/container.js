@@ -24,6 +24,7 @@ const AuthenticationTokenManager = require('../Applications/security/Authenticat
 const RegisterUserUseCase = require('../Applications/use_case/RegisterUserUseCase');
 const UserLoginUseCase = require('../Applications/use_case/UserLoginUseCase');
 const RefreshAuthenticationUseCase = require('../Applications/use_case/RefreshAuthenticationUseCase');
+const UserLogOutUseCase = require('../Applications/use_case/UserLogOutUseCase');
 
 // creating container
 const container = createContainer();
@@ -136,6 +137,19 @@ container.register([
         {
           name: 'authenticationTokenManager',
           internal: AuthenticationTokenManager.name,
+        },
+      ],
+    },
+  },
+  {
+    key: UserLogOutUseCase.name,
+    Class: UserLogOutUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'authenticationsRepository',
+          internal: AuthenticationsRepository.name,
         },
       ],
     },

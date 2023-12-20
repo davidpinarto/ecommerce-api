@@ -19,6 +19,10 @@ describe('DomainErrorTranslator', () => {
       .toStrictEqual(new InvariantError('refresh token is missing'));
     expect(DomainErrorTranslator.translate(new Error('REFRESH_AUTHENTICATION_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION')))
       .toStrictEqual(new InvariantError('refresh token must be string'));
+    expect(DomainErrorTranslator.translate(new Error('USER_LOG_OUT_USE_CASE.USE_CASE_PAYLOAD_NOT_CONTAIN_NEEDED_PROPERTY')))
+      .toStrictEqual(new InvariantError('payload not contain needed property'));
+    expect(DomainErrorTranslator.translate(new Error('USER_LOG_OUT_USE_CASE.USE_CASE_PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION')))
+      .toStrictEqual(new InvariantError('refresh token must be string'));
   });
 
   it('should return original error when error message is not needed to translate', () => {

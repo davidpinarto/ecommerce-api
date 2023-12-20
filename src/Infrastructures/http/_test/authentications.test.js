@@ -246,4 +246,94 @@ describe('/authentications endpoint', () => {
       expect(responseJson.message).toEqual('refresh token must be string');
     });
   });
+
+  describe('when DELETE /authentications', () => {
+    it('should return 400 when use case payload not contain needed property', async () => {
+      const server = await createServer(container);
+
+      const response = await server.inject({
+        method: 'DELETE',
+        url: '/authentications',
+        payload: {},
+      });
+
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(400);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toEqual('payload not contain needed property');
+    });
+
+    it('should return 400 when use case payload not meet data type specification', async () => {
+      const server = await createServer(container);
+
+      const response = await server.inject({
+        method: 'DELETE',
+        url: '/authentications',
+        payload: {
+          refreshToken: 123,
+        },
+      });
+
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(400);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toEqual('refresh token must be string');
+    });
+
+    it('should return 404 when refresh token is not available in database', async () => {
+      const server = await createServer(container);
+
+      const response = await server.inject({
+        method: 'DELETE',
+        url: '/authentications',
+        payload: {
+          refreshToken: 'refresh_token',
+        },
+      });
+
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(404);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toEqual('Refresh Token is not available');
+    });
+
+    it('should return 200 and delete refresh token in database', async () => {
+      const server = await createServer(container);
+
+      await server.inject({
+        method: 'POST',
+        url: '/users',
+        payload: {
+          username: 'david',
+          password: 'david',
+          fullname: 'david pinarto',
+        },
+      });
+
+      const getRefreshToken = await server.inject({
+        method: 'POST',
+        url: '/authentications',
+        payload: {
+          username: 'david',
+          password: 'david',
+        },
+      });
+
+      const getRefreshTokenResponse = JSON.parse(getRefreshToken.payload);
+      const { refreshToken } = getRefreshTokenResponse.data.newAuth;
+
+      const response = await server.inject({
+        method: 'DELETE',
+        url: '/authentications',
+        payload: {
+          refreshToken,
+        },
+      });
+
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual('success');
+      expect(responseJson.message).toEqual('User log out successfully');
+    });
+  });
 });

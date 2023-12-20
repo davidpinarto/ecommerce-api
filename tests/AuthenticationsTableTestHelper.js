@@ -19,6 +19,17 @@ const AuthenticationsTableTestHelper = {
 
     await pool.query(query);
   },
+
+  async findRefreshToken(token) {
+    const query = {
+      text: 'SELECT * FROM authentications WHERE token = $1',
+      values: [token],
+    };
+
+    const result = await pool.query(query);
+
+    return result.rows;
+  },
 };
 
 module.exports = AuthenticationsTableTestHelper;
