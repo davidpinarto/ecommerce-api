@@ -1,6 +1,7 @@
 const AuthenticationsRepositoryPostgres = require('../AuthenticationsRepositoryPostgres');
 const AuthenticationsTableTestHelper = require('../../../../tests/AuthenticationsTableTestHelper');
 const pool = require('../../database/postgres/pool');
+const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 
 describe('AuthenticationsRepositoryPostgres', () => {
   afterAll(async () => {
@@ -19,6 +20,23 @@ describe('AuthenticationsRepositoryPostgres', () => {
 
       const checkRefreshToken = await AuthenticationsTableTestHelper.getRefreshToken();
       expect(checkRefreshToken).toHaveLength(1);
+    });
+  });
+
+  describe('verifyRefreshToken function', () => {
+    it('should throw error when refreshToken is not available database', async () => {
+      const authenticationsRepositoryPostgres = new AuthenticationsRepositoryPostgres(pool);
+
+      await expect(authenticationsRepositoryPostgres.verifyRefreshToken('refreshToken'))
+        .rejects.toThrow('Refresh Token is not available');
+    });
+
+    it('should not throw error when refreshToken is available in database', async () => {
+      await AuthenticationsTableTestHelper.addRefreshToken({});
+      const authenticationsRepositoryPostres = new AuthenticationsRepositoryPostgres(pool);
+
+      await expect(authenticationsRepositoryPostres.verifyRefreshToken('refreshToken'))
+        .resolves.not.toThrow(NotFoundError);
     });
   });
 });

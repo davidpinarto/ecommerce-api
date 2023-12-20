@@ -7,7 +7,11 @@ class AuthenticationTokenManager {
     throw new Error('AUTHENTICATION_TOKEN_MANAGER.METHOD_NOT_IMPLEMENTED');
   }
 
-  async verifyRefreshToken(refreshToken) {
+  async verifyRefreshTokenSignature(refreshToken) {
+    throw new Error('AUTHENTICATION_TOKEN_MANAGER.METHOD_NOT_IMPLEMENTED');
+  }
+
+  async decodePayload(refreshToken) {
     throw new Error('AUTHENTICATION_TOKEN_MANAGER.METHOD_NOT_IMPLEMENTED');
   }
 }
