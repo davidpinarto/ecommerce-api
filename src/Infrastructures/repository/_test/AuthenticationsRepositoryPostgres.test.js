@@ -39,4 +39,16 @@ describe('AuthenticationsRepositoryPostgres', () => {
         .resolves.not.toThrow(NotFoundError);
     });
   });
+
+  describe('deleteRefreshToken function', () => {
+    it('should delete refresh token in database correctly', async () => {
+      await AuthenticationsTableTestHelper.addRefreshToken({});
+      const authenticationsRepositoryPostgres = new AuthenticationsRepositoryPostgres(pool);
+
+      await authenticationsRepositoryPostgres.deleteRefreshToken('refreshToken');
+
+      const findRefreshToken = await AuthenticationsTableTestHelper.findRefreshToken('refreshToken');
+      expect(findRefreshToken).toHaveLength(0);
+    });
+  });
 });
