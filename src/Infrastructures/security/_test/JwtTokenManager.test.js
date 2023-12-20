@@ -1,5 +1,6 @@
-// const Jwt = require('@hapi/jwt');
+const Jwt = require('@hapi/jwt');
 const JwtTokenManager = require('../JwtTokenManager');
+const InvariantError = require('../../../Commons/exceptions/InvariantError');
 
 describe('JwtTokenManager', () => {
   describe('generateAccessToken function', () => {
@@ -43,12 +44,33 @@ describe('JwtTokenManager', () => {
     });
   });
 
-  // describe('verifyRefreshToken function', async () => {
-  //   it('should verifyRefreshToken correctly', async () => {
-  //     const mockJwtToken = {
-  //       decode: jest.fn().mockImplementation(() => 'artifacts'),
-  //       verifySignature: jest.fn().mockImplementation(())
-  //     };
-  //   });
-  // });
+  describe('verifyRefreshTokenSignature function', () => {
+    it('should throw error when refresh token signature is not valid', async () => {
+      const jwtTokenManager = new JwtTokenManager(Jwt.token);
+      const accessToken = await jwtTokenManager.generateAccessToken({ username: 'david', id: 'user-123' });
+
+      await expect(jwtTokenManager.verifyRefreshTokenSignature(accessToken))
+        .rejects.toThrow('Refresh token is not valid');
+    });
+
+    it('should verifyRefreshTokenSignature correctly', async () => {
+      const jwtTokenManager = new JwtTokenManager(Jwt.token);
+      const refreshToken = await jwtTokenManager.generateRefreshToken({ username: 'david', id: 'user-123' });
+
+      await expect(jwtTokenManager.verifyRefreshTokenSignature(refreshToken))
+        .resolves.not.toThrow(InvariantError);
+    });
+  });
+
+  describe('decodePayload function', () => {
+    it('should decode payload correctly', async () => {
+      const jwtTokenManager = new JwtTokenManager(Jwt.token);
+      const refreshToken = await jwtTokenManager.generateRefreshToken({ username: 'david', id: 'user-123' });
+
+      const { username, id } = await jwtTokenManager.decodePayload(refreshToken);
+
+      expect(username).toEqual('david');
+      expect(id).toEqual('user-123');
+    });
+  });
 });

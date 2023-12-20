@@ -134,4 +134,46 @@ describe('/authentications endpoint', () => {
       expect(responseJson.message).toEqual('Wrong user credential');
     });
   });
+
+  describe('when PUT /authentications', () => {
+    it('should response 201 and create new access token', async () => {
+      const server = await createServer(container);
+
+      await server.inject({
+        method: 'POST',
+        url: '/users',
+        payload: {
+          username: 'david',
+          password: 'david',
+          fullname: 'david pinarto',
+        },
+      });
+
+      const postAuthentications = await server.inject({
+        method: 'POST',
+        url: '/authentications',
+        payload: {
+          username: 'david',
+          password: 'david',
+        },
+      });
+
+      const postAuthenticationsResponse = JSON.parse(postAuthentications.payload);
+      const { refreshToken } = postAuthenticationsResponse.data.newAuth;
+
+      const response = await server.inject({
+        method: 'PUT',
+        url: '/authentications',
+        payload: {
+          refreshToken,
+        },
+      });
+
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(201);
+      expect(responseJson.status).toEqual('success');
+      // expect(responseJson.message).toEqual('');
+      // console.log(responseJson);
+    });
+  });
 });

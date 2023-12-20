@@ -8,7 +8,9 @@ describe('AuthenticationTokenManager interface', () => {
       .rejects.toThrow('AUTHENTICATION_TOKEN_MANAGER.METHOD_NOT_IMPLEMENTED');
     await expect(authenticationTokenManager.generateRefreshToken({}))
       .rejects.toThrow('AUTHENTICATION_TOKEN_MANAGER.METHOD_NOT_IMPLEMENTED');
-    await expect(authenticationTokenManager.verifyRefreshToken(''))
+    await expect(authenticationTokenManager.verifyRefreshTokenSignature(''))
+      .rejects.toThrow('AUTHENTICATION_TOKEN_MANAGER.METHOD_NOT_IMPLEMENTED');
+    await expect(authenticationTokenManager.decodePayload(''))
       .rejects.toThrow('AUTHENTICATION_TOKEN_MANAGER.METHOD_NOT_IMPLEMENTED');
   });
 });
