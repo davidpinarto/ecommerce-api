@@ -8,8 +8,8 @@ class RefreshAuthenticationUseCase {
     this._verifyPayload(useCasePayload);
     const { refreshToken } = useCasePayload;
 
-    await this._authenticationsRepository.verifyRefreshToken(refreshToken);
     await this._authenticationTokenManager.verifyRefreshTokenSignature(refreshToken);
+    await this._authenticationsRepository.verifyRefreshToken(refreshToken);
 
     const { username, id } = await this._authenticationTokenManager.decodePayload(refreshToken);
 

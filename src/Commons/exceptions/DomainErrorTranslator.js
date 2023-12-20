@@ -13,6 +13,8 @@ DomainErrorTranslator._directories = {
   'REGISTER_USER.USERNAME_CONTAIN_RESTRICTED_CHARACTER': new InvariantError('cannot create user because username contain restricted character'),
   'USER_LOGIN.PAYLOAD_NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('cannot login because payload did not contain needed property'),
   'USER_LOGIN.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('cannot login because payload did not meet data type specification'),
+  'REFRESH_AUTHENTICATION_USE_CASE.PAYLOAD_NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('refresh token is missing'),
+  'REFRESH_AUTHENTICATION_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('refresh token must be string'),
 };
 
 module.exports = DomainErrorTranslator;
